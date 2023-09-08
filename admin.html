@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Produk</title>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+    <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.6.3.min.js"></script>
+    <style>
+        table img {
+            aspect-ratio: 1;
+            object-fit: cover;
+            max-width: 40px;
+        }
+
+        table tr {
+            vertical-align: middle;
+        }
+
+        .link-item {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100px;
+        }
+
+        #previewProduk {
+            aspect-ratio: 1;
+            object-fit: cover;
+            max-width: 100px;
+        }
+
+        .action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        textarea {
+            min-height: 150px !important;
+        }
+    </style>
+</head>
+
+<body class="d-none">
+    <nav class="navbar navbar-dark bg-success text-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Admin Data</a>
+            <a class="nav-link ms-auto me-3" href="produk.html">Back</a>
+        </div>
+    </nav>
+
+    <main class="py-4">
+        <div class="container">
+            <h4 class="mb-4 d-flex align-items-center">Admin Data Produk <button onclick="tambahKategori()"
+                    class="ms-auto btn btn-primary">+
+                    Kategori</button></h4>
+            <div class="accordion" id="accData">
+
+            </div>
+            <button onclick="renderCode()" class="d-flex mt-3 ms-auto btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#lihatKode">Lihat
+                Kode JSON</button>
+        </div>
+    </main>
+
+    <div class="modal fade" id="editAddData" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editAddTitle">Ubah Data</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="namaProduk" placeholder="Nama Produk">
+                                <label for="namaProduk">Nama</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="sizeProduk" placeholder="Nama Produk">
+                                <label for="sizeProduk">Size</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="hargaProduk" placeholder="Nama Produk">
+                                <label for="hargaProduk">Harga</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="linkProduk" placeholder="Nama Produk">
+                                <label for="linkProduk">Link</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="fotoProduk" placeholder="Nama Produk">
+                                <label for="fotoProduk">Url Gambar</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="file" id="formFile">
+                                <label for="formFile">Upload Juga Bisa Kok</label>
+                            </div>
+
+                        </div>
+                    </div>
+                    <h5>Preview Gambar</h5>
+                    <img id="previewProduk" src="" alt="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="editAddSimpanBtn"
+                        data-bs-dismiss="modal">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="lihatKode" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Lihat Kode JSON</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>Copy Paste kode berikut ke data.json</h5>
+                    <p>Jangan lupa tambahin kode &lt;option value="nama-kategori"&gt; di &lt;select id="select_kopi"&gt;
+                        kalo nambah kategori ya.
+                    </p>
+                    <div class="form-floating mt-4">
+                        <textarea readonly class="form-control" placeholder="Leave a comment here"
+                            id="kodeJSONText"></textarea>
+                        <label for="kodeJSONText">Kode JSON</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const password = 'prakerja'
+        var pass = prompt("Masukkan Password:", "")
+        if (pass != password) {
+            document.body.innerHTML = `<h2>Password Anda salah, salah!</h2> <button onclick="location.reload()">Coba Lagi</button>`
+        }
+        document.body.classList.remove("d-none")
+
+        var data = null
+        var editedKey = null
+        var editedIndex = null
+
+        if (localStorage.getItem("data_produk") == null) {
+            $.getJSON("./data.json").then(function (res) {
+                data = res
+                renderTable()
+            })
+        } else {
+            let dataRaw = localStorage.getItem("data_produk")
+            data = JSON.parse(dataRaw)
+            renderTable()
+        }
+
+        function renderTable() {
+            console.log(data)
+            localStorage.setItem("data_produk", JSON.stringify(data))
+            let accItemTmp = ''
+            let index = 0;
+            Object.entries(data).forEach(entry => {
+                const [key, value] = entry
+                accItemTmp += `<div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#item-${index}">
+                            ${key}
+                        </button>
+                    </h2>
+                    <div id="item-${index}" class="accordion-collapse collapse" data-bs-parent="#accData">
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table table-stiped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Gambar</th>
+                                            <th scope="col">Nama</th>
+                                            <th scope="col">Size</th>
+                                            <th scope="col">Harga</th>
+                                            <th scope="col">Link</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`
+                let no = 1;
+                let tr = ''
+                value.forEach((el, indexItem) => {
+                    tr += `<tr>
+                        <th scope="row">${no}</th>
+                        <td><img src="${el.foto}" alt=""></td>
+                        <td>${el.nama}</td>
+                        <td>${el.size}</td>
+                        <td>${el.harga}</td>
+                        <td class="link-item">${el.link}</td>
+                        <td class="action">
+                            <button onclick="editData('${key}',${indexItem})" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editAddData">Edit</button>
+                            <button onclick="deleteData('${key}',${indexItem})" class="ms-2 btn btn-danger">Delete</button>
+                        </td>
+                    </tr>`
+                    no++
+                })
+                accItemTmp += tr + `</tbody></table>
+                <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editAddData" onclick="tambahData('${key}')">+ Tambah Data</button>
+                <button class="btn btn-danger mt-3" onclick="hapusKategori('${key}')">Hapus Kategori</button>
+                </div></div></div></div></div>`
+                index++
+            })
+            accData.innerHTML = accItemTmp
+        }
+
+        function editData(key, index) {
+            editAddTitle.innerHTML = "Ubah Data"
+            editedIndex = index
+            editedKey = key
+            namaProduk.value = data[key][index].nama
+            sizeProduk.value = data[key][index].size
+            hargaProduk.value = data[key][index].harga
+            linkProduk.value = data[key][index]['link']
+            fotoProduk.value = data[key][index].foto
+            previewProduk.setAttribute("src", fotoProduk.value)
+        }
+
+        function tambahData(key) {
+            editAddTitle.innerHTML = "Tambah Data Baru"
+            editedIndex = null
+            editedKey = key
+            namaProduk.value = 'Nama Produk'
+            sizeProduk.value = '100 ml'
+            hargaProduk.value = '10.000'
+            linkProduk.value = '#'
+            fotoProduk.value = 'images/produk/product_kopi_susu.jpg'
+            previewProduk.setAttribute("src", fotoProduk.value)
+        }
+
+        fotoProduk.onkeyup = function () {
+            previewProduk.setAttribute("src", fotoProduk.value)
+        }
+
+        editAddSimpanBtn.onclick = function () {
+            if (editedIndex != null) {
+                data[editedKey][editedIndex].nama = namaProduk.value
+                data[editedKey][editedIndex].size = sizeProduk.value
+                data[editedKey][editedIndex].harga = hargaProduk.value
+                data[editedKey][editedIndex]['link'] = linkProduk.value
+                data[editedKey][editedIndex].foto = fotoProduk.value
+            } else {
+                data[editedKey].push({
+                    nama: namaProduk.value,
+                    size: sizeProduk.value,
+                    harga: hargaProduk.value,
+                    link: linkProduk.value,
+                    foto: fotoProduk.value
+                })
+            }
+            alert("data berhasil disimpan")
+            renderTable()
+        }
+
+        function deleteData(key, index) {
+            let yakin = confirm(`Yakin mau apus Data ${data[key][index].nama}?`)
+            if (yakin === true) {
+                data[key].splice(index, 1)
+                renderTable()
+            }
+        }
+
+        function hapusKategori(key) {
+            let yakin = confirm(`Yakin mau apus Kategori ${key}? nanti data produknya juga keapus semua.`)
+            if (yakin === true) {
+                delete data[key]
+                renderTable()
+            }
+        }
+
+        function renderCode() {
+            let dataTXT = JSON.stringify(data, null, 2);
+            kodeJSONText.value = dataTXT
+        }
+        kodeJSONText.onclick = function () {
+            kodeJSONText.select()
+            document.execCommand('copy')
+        }
+
+        function tambahKategori() {
+            let nama_kategori_baru = prompt("Apa Nama Kategori Barunya?", "")
+            if (nama_kategori_baru == "") {
+                alert("Nama kategori harus di isi dan tidak boleh ada spasi")
+                return false
+            } else {
+                nama_kategori_baru = nama_kategori_baru.replace(/[^A-Za-z0-9\-]/g, '').toLocaleLowerCase()
+                if (nama_kategori_baru != "") {
+                    var status = true
+                    Object.entries(data).forEach(entry => {
+                        const [key, value] = entry
+                        if (nama_kategori_baru == key) status = false
+                    })
+                    if (status == false) {
+                        alert(`Nama kategori ${nama_kategori_baru} sudah ada! pilih nama lain!`)
+                    } else {
+                        data[nama_kategori_baru] = []
+                        data[nama_kategori_baru].push({
+                            nama: "Nama produk",
+                            size: "100ml",
+                            harga: "10.000",
+                            link: "#",
+                            foto: "images/produk/product_kopi_susu.jpg"
+                        })
+                        renderTable()
+                    }
+                } else {
+                    alert("Nama kategori harus di isi dan tidak boleh ada spasi")
+                }
+            }
+        }
+
+
+        formFile.onchange = function () {
+            let gambar = formFile.files[0]
+            const reader = new FileReader()
+            reader.readAsDataURL(gambar);
+            reader.name = gambar.name;
+            reader.size = gambar.size;
+            var resize_width = 320;
+            reader.onload = (event) => {
+                var img = new Image();
+                img.src = event.target.result;
+                img.name = event.target.name;
+                img.size = event.target.size;
+                img.onload = function (el) {
+                    var elem = document.createElement('canvas');
+                    var scaleFactor = resize_width / el.target.width;
+                    elem.width = resize_width;
+                    elem.height = el.target.height * scaleFactor;
+                    var ctx = elem.getContext('2d');
+                    ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
+                    var srcEncoded = ctx.canvas.toDataURL('image/png', 1);
+
+                    fotoProduk.value = srcEncoded
+                    previewProduk.setAttribute("src", srcEncoded)
+                    console.log(srcEncoded)
+
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
